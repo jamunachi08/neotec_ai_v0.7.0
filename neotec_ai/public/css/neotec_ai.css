@@ -1,0 +1,8 @@
+.neotec-shell{padding:18px 8px}
+.neotec-hero{background:linear-gradient(135deg,#1F4E79,#3D7AA6);color:#fff;border-radius:16px;padding:22px;margin-bottom:18px}
+.neotec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:18px}
+.neotec-card,.neotec-panel{background:#fff;border:1px solid #dce7ef;border-radius:14px;padding:16px;box-shadow:0 3px 10px rgba(31,78,121,.08)}
+.neotec-card-title{font-weight:700;color:#1F4E79;margin-bottom:6px}
+.neotec-card-text{color:#4f6576;font-size:13px}
+.neotec-quick-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.neotec-result{margin-top:16px}

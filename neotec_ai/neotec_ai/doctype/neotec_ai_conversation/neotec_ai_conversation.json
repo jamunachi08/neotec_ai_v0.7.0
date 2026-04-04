@@ -1,0 +1,61 @@
+{
+  "doctype": "DocType",
+  "name": "Neotec Ai Conversation",
+  "module": "Neotec AI",
+  "custom": 0,
+  "istable": 0,
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "allow_import": 1,
+  "quick_entry": 0,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "autoname": "hash",
+  "fields": [
+    {
+      "fieldname": "prompt_text",
+      "fieldtype": "Small Text",
+      "label": "Prompt Text",
+      "reqd": 1
+    },
+    {
+      "fieldname": "mode",
+      "fieldtype": "Select",
+      "label": "Mode",
+      "options": "AI Chat\nBI / Reports\nDocument AI\nAutomate Work\nVoice"
+    },
+    {
+      "fieldname": "context_doctype",
+      "fieldtype": "Data",
+      "label": "Context DocType"
+    },
+    {
+      "fieldname": "context_name",
+      "fieldtype": "Data",
+      "label": "Context Name"
+    },
+    {
+      "fieldname": "response_text",
+      "fieldtype": "Text Editor",
+      "label": "Response Text"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "All",
+      "read": 1
+    }
+  ]
+}

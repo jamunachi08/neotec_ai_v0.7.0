@@ -1,0 +1,55 @@
+{
+  "doctype": "DocType",
+  "name": "Neotec Ai Knowledge Asset",
+  "module": "Neotec AI",
+  "custom": 0,
+  "istable": 0,
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "allow_import": 1,
+  "quick_entry": 0,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "autoname": "hash",
+  "fields": [
+    {
+      "fieldname": "title",
+      "fieldtype": "Data",
+      "label": "Title",
+      "reqd": 1
+    },
+    {
+      "fieldname": "source_type",
+      "fieldtype": "Data",
+      "label": "Source Type"
+    },
+    {
+      "fieldname": "summary",
+      "fieldtype": "Text Editor",
+      "label": "Summary"
+    },
+    {
+      "fieldname": "source_reference",
+      "fieldtype": "Data",
+      "label": "Source Reference"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "All",
+      "read": 1
+    }
+  ]
+}

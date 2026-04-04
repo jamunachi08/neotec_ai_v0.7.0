@@ -1,0 +1,9 @@
+{
+  "doctype": "Page",
+  "name": "neotec-ai-hub",
+  "module": "Neotec AI",
+  "title": "Neotec AI Hub",
+  "standard": "Yes",
+  "icon": "octicon octicon-cpu",
+  "page_name": "neotec-ai-hub"
+}

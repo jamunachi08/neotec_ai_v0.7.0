@@ -1,0 +1,5 @@
+include README.md
+include license.txt
+recursive-include neotec_ai *.css *.js *.json *.md *.png *.svg *.txt *.html
+recursive-include neotec_ai/public *
+recursive-include neotec_ai/templates *

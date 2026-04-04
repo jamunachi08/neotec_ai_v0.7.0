@@ -1,0 +1,50 @@
+{
+  "doctype": "DocType",
+  "name": "Neotec Ai Voice Command Log",
+  "module": "Neotec AI",
+  "custom": 0,
+  "istable": 0,
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "allow_import": 1,
+  "quick_entry": 0,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "autoname": "hash",
+  "fields": [
+    {
+      "fieldname": "spoken_text",
+      "fieldtype": "Small Text",
+      "label": "Spoken Text",
+      "reqd": 1
+    },
+    {
+      "fieldname": "resolved_intent",
+      "fieldtype": "Data",
+      "label": "Resolved Intent"
+    },
+    {
+      "fieldname": "target_route",
+      "fieldtype": "Data",
+      "label": "Target Route"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "All",
+      "read": 1
+    }
+  ]
+}

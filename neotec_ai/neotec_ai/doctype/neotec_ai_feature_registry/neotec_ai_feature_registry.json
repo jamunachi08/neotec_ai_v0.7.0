@@ -1,0 +1,67 @@
+{
+  "doctype": "DocType",
+  "name": "Neotec Ai Feature Registry",
+  "module": "Neotec AI",
+  "custom": 0,
+  "istable": 0,
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "allow_import": 1,
+  "quick_entry": 0,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "autoname": "field:feature_name",
+  "fields": [
+    {
+      "fieldname": "feature_name",
+      "fieldtype": "Data",
+      "label": "Feature Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "app_name",
+      "fieldtype": "Data",
+      "label": "App Name"
+    },
+    {
+      "fieldname": "module_name",
+      "fieldtype": "Data",
+      "label": "Module Name"
+    },
+    {
+      "fieldname": "doctype_name",
+      "fieldtype": "Data",
+      "label": "DocType Name"
+    },
+    {
+      "fieldname": "feature_type",
+      "fieldtype": "Select",
+      "label": "Feature Type",
+      "options": "Document AI\nBI\nVoice\nAutomation\nKnowledge"
+    },
+    {
+      "fieldname": "enabled",
+      "fieldtype": "Check",
+      "label": "Enabled",
+      "default": "1"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "print": 1,
+      "email": 1,
+      "report": 1,
+      "share": 1
+    },
+    {
+      "role": "All",
+      "read": 1
+    }
+  ]
+}
