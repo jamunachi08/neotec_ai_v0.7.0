@@ -1,66 +1,88 @@
 import frappe
 
-SAFE_PROMPTS = [
-    {"title": "Sales Summary Today", "prompt_text": "Show today sales summary with key KPIs and next actions.", "module_scope": "Selling", "prompt_type": "Insight", "is_system": 1},
-    {"title": "Receivables Risk", "prompt_text": "Summarize overdue receivables and collection priorities.", "module_scope": "Accounts", "prompt_type": "Insight", "is_system": 1},
-    {"title": "Inventory Status", "prompt_text": "Show stock exceptions, low stock items, and replenishment priorities.", "module_scope": "Stock", "prompt_type": "Insight", "is_system": 1},
-    {"title": "Payroll Variance", "prompt_text": "Explain payroll variance and unusual deductions.", "module_scope": "HR", "prompt_type": "Insight", "is_system": 1},
+
+STARTER_TEMPLATES = [
+    {
+        "title": "Sales Summary Today",
+        "prompt_text": "Show today sales summary with key KPIs and next actions.",
+        "module_scope": "Selling",
+        "prompt_type": "Insight",
+        "is_system": 1,
+    },
+    {
+        "title": "Receivables Risk",
+        "prompt_text": "Summarize overdue receivables, collection risk, and suggested follow-ups.",
+        "module_scope": "Accounts",
+        "prompt_type": "Insight",
+        "is_system": 1,
+    },
+    {
+        "title": "Inventory Exceptions",
+        "prompt_text": "Show shortages, fast movers, slow movers, and replenishment suggestions.",
+        "module_scope": "Stock",
+        "prompt_type": "Insight",
+        "is_system": 1,
+    },
+    {
+        "title": "HR Variance Review",
+        "prompt_text": "Summarize attendance, leave, and payroll anomalies requiring attention.",
+        "module_scope": "HR",
+        "prompt_type": "Insight",
+        "is_system": 1,
+    },
 ]
 
-FEATURES = [
-    {"feature_name": "Universal Document AI", "app_name": "ERPNext", "module_name": "Core", "feature_type": "Document AI", "enabled": 1},
-    {"feature_name": "Prompt to Report", "app_name": "ERPNext", "module_name": "Analytics", "feature_type": "BI", "enabled": 1},
-    {"feature_name": "Voice Navigation", "app_name": "ERPNext", "module_name": "Core", "feature_type": "Voice", "enabled": 1},
-]
 
-def _safe_get_or_create_single(doctype):
+def _doctype_ready(doctype: str) -> bool:
     try:
-        return frappe.get_single(doctype)
+        if not frappe.db.exists("DocType", doctype):
+            return False
+        return bool(frappe.db.table_exists(f"tab{doctype}"))
     except Exception:
-        if frappe.db.exists("DocType", doctype):
-            doc = frappe.get_doc({"doctype": doctype})
-            doc.flags.ignore_permissions = True
-            doc.insert(ignore_permissions=True)
-            return frappe.get_single(doctype)
-        return None
+        frappe.log_error(frappe.get_traceback(), f"Neotec AI readiness check failed: {doctype}")
+        return False
 
-def _ensure_settings():
-    settings = _safe_get_or_create_single("Neotec AI Settings")
-    if settings:
-        defaults = {
-            "default_mode": getattr(settings, "default_mode", None) or "AI Chat",
-            "allow_draft_actions": getattr(settings, "allow_draft_actions", 0),
-            "enable_voice": getattr(settings, "enable_voice", 1),
-            "enable_bi_mode": getattr(settings, "enable_bi_mode", 1),
-            "enable_document_ai": getattr(settings, "enable_document_ai", 1),
-        }
-        for k, v in defaults.items():
-            setattr(settings, k, v)
-        settings.flags.ignore_permissions = True
-        settings.save(ignore_permissions=True)
+
+def _ensure_single_settings():
+    doctype = "Neotec AI Settings"
+    if not _doctype_ready(doctype):
+        return
+
+    try:
+        if not frappe.db.exists(doctype, doctype):
+            doc = frappe.get_doc({"doctype": doctype})
+            doc.flags.ignore_mandatory = True
+            doc.save(ignore_permissions=True)
+            frappe.db.commit()
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "Neotec AI settings bootstrap failed")
+
 
 def _ensure_templates():
-    if not frappe.db.exists("DocType", "Neotec AI Prompt Template"):
+    doctype = "Neotec AI Prompt Template"
+    if not _doctype_ready(doctype):
         return
-    for row in SAFE_PROMPTS:
-        if not frappe.db.exists("Neotec AI Prompt Template", {"title": row["title"]}):
-            doc = frappe.get_doc({"doctype": "Neotec AI Prompt Template", **row})
-            doc.flags.ignore_permissions = True
-            doc.insert(ignore_permissions=True)
 
-def _ensure_registry():
-    if not frappe.db.exists("DocType", "Neotec AI Feature Registry"):
-        return
-    for row in FEATURES:
-        if not frappe.db.exists("Neotec AI Feature Registry", {"feature_name": row["feature_name"]}):
-            doc = frappe.get_doc({"doctype": "Neotec AI Feature Registry", **row})
-            doc.flags.ignore_permissions = True
-            doc.insert(ignore_permissions=True)
+    for row in STARTER_TEMPLATES:
+        try:
+            if not frappe.db.exists(doctype, row["title"]):
+                doc = frappe.get_doc({"doctype": doctype, **row})
+                doc.insert(ignore_permissions=True)
+        except Exception:
+            frappe.log_error(
+                frappe.get_traceback(),
+                f"Neotec AI template insert failed: {row.get('title')}",
+            )
+
+    frappe.db.commit()
+
 
 def after_install():
-    _ensure_settings()
-    _ensure_templates()
-    _ensure_registry()
+    # Keep install phase lightweight and safe.
+    # Do not assume all tables are immediately queryable on every environment.
+    pass
+
 
 def after_migrate():
-    after_install()
+    _ensure_single_settings()
+    _ensure_templates()
