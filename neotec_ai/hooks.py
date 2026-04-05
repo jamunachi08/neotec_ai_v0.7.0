@@ -24,7 +24,6 @@ add_to_apps_screen = [
     }
 ]
 
-after_install = "neotec_ai.install.after_install"
 after_migrate = "neotec_ai.install.after_migrate"
 
 scheduler_events = {

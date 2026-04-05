@@ -32,8 +32,14 @@ STARTER_TEMPLATES = [
     },
 ]
 
+FEATURES = [
+    {"feature_name": "Universal Document AI", "app_name": "ERPNext", "module_name": "Core", "feature_type": "Document AI", "enabled": 1},
+    {"feature_name": "Prompt to Report", "app_name": "ERPNext", "module_name": "Analytics", "feature_type": "BI", "enabled": 1},
+    {"feature_name": "Voice Navigation", "app_name": "ERPNext", "module_name": "Core", "feature_type": "Voice", "enabled": 1},
+]
 
-def _doctype_ready(doctype: str) -> bool:
+
+def _table_ready(doctype: str) -> bool:
     try:
         if not frappe.db.exists("DocType", doctype):
             return False
@@ -43,46 +49,51 @@ def _doctype_ready(doctype: str) -> bool:
         return False
 
 
-def _ensure_single_settings():
+def _ensure_settings():
     doctype = "Neotec AI Settings"
-    if not _doctype_ready(doctype):
+    if not _table_ready(doctype):
         return
-
     try:
         if not frappe.db.exists(doctype, doctype):
             doc = frappe.get_doc({"doctype": doctype})
             doc.flags.ignore_mandatory = True
-            doc.save(ignore_permissions=True)
-            frappe.db.commit()
+            doc.insert(ignore_permissions=True)
     except Exception:
         frappe.log_error(frappe.get_traceback(), "Neotec AI settings bootstrap failed")
 
 
 def _ensure_templates():
     doctype = "Neotec AI Prompt Template"
-    if not _doctype_ready(doctype):
+    if not _table_ready(doctype):
         return
-
     for row in STARTER_TEMPLATES:
         try:
-            if not frappe.db.exists(doctype, row["title"]):
+            if not frappe.db.exists(doctype, {"title": row["title"]}):
                 doc = frappe.get_doc({"doctype": doctype, **row})
                 doc.insert(ignore_permissions=True)
         except Exception:
-            frappe.log_error(
-                frappe.get_traceback(),
-                f"Neotec AI template insert failed: {row.get('title')}",
-            )
+            frappe.log_error(frappe.get_traceback(), f"Neotec AI template insert failed: {row.get('title')}")
 
-    frappe.db.commit()
+
+def _ensure_registry():
+    doctype = "Neotec AI Feature Registry"
+    if not _table_ready(doctype):
+        return
+    for row in FEATURES:
+        try:
+            if not frappe.db.exists(doctype, {"feature_name": row["feature_name"]}):
+                doc = frappe.get_doc({"doctype": doctype, **row})
+                doc.insert(ignore_permissions=True)
+        except Exception:
+            frappe.log_error(frappe.get_traceback(), f"Neotec AI feature registry insert failed: {row.get('feature_name')}")
 
 
 def after_install():
-    # Keep install phase lightweight and safe.
-    # Do not assume all tables are immediately queryable on every environment.
+    # Keep installation lightweight and do not seed child tables too early.
     pass
 
 
 def after_migrate():
-    _ensure_single_settings()
+    _ensure_settings()
     _ensure_templates()
+    _ensure_registry()
